@@ -52,7 +52,7 @@ jobs:
         run: |
           mkdir -p kernel_input && cd kernel_input
           wget ${{ github.event.inputs.KERNEL_URL }}
-          && cd ..
+          
 
       - name:  Execution Kernel
         working-directory: android/
