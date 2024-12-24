@@ -36,8 +36,8 @@ jobs:
 
       - name: Prepare the environment
         run: |
-          sudo apt-get update && sudo apt-get upgrade && sudo apt-get install wget -y
-          && sudo apt-get install python3-pip -y && sudo apt-get install git -y
+          sudo apt-get update && sudo apt-get upgrade
+          sudo apt-get install wget -y sudo apt-get install python3-pip -y sudo apt-get install git -y
       
       - name: Install Bpf-Patcher
         run: |
@@ -61,6 +61,7 @@ jobs:
           mtk-bpf-patcher kernel_input/*.gz kernel_output
           mtk-bpf-patcher kernel_input/*.gz-dtb kernel_output
           mtk-bpf-patcher kernel_input/*.Image kernel_output
+          mtk-bpf-patcher kernel_input/*kernel kernel_output
 
       - name: Push to Release
         uses: softprops/action-gh-release@v1
