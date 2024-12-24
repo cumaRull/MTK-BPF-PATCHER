@@ -59,9 +59,7 @@ jobs:
         run: |
           mkdir -p kernel_output 
           mtk-bpf-patcher kernel_input/Image.gz kernel_output
-          mtk-bpf-patcher kernel_input/Image.gz-dtb kernel_output
-          mtk-bpf-patcher kernel_input/Image kernel_output
-          mtk-bpf-patcher kernel_input/kernel kernel_output
+          
 
       - name: Push to Release
         uses: softprops/action-gh-release@v1
