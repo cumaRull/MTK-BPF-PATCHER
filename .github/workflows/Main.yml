@@ -70,6 +70,7 @@ jobs:
            android/kernel_output/*.gz
            android/kernel_output/*.gz-dtb
            android/kernel_output/*.Image
+           android/kernel_output/*kernel
 
           name: Kernel Build 
           tag_name: ${{ github.run_id }}
