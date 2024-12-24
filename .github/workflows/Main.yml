@@ -58,7 +58,6 @@ jobs:
         working-directory: android/
         run: |
           mkdir -p kernel_output 
-          mtk-bpf-patcher Image.gz kernel_output
           mtk-bpf-patcher -l kernel_input/Image.gz kernel_output
           
 
