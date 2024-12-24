@@ -1,0 +1,79 @@
+# This is a basic workflow to help you get started with Actions
+
+name: MTK-BPF-PATCHER
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+ 
+  workflow_dispatch:
+    inputs:
+      KERNEL_URL:
+        description: 'Enter your prebuilt Kernel Link'
+        required: true
+        default: 'https://github.com/yuzumi86/kernel_realme_even'
+
+  # Allows you to run this workflow manually from the Actions tab
+ 
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+   build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Display Run Parameters
+        run: |
+         echo "::group::User Environment Variables"
+         echo "Kernel URL: ${{ github.event.inputs.KERNEL_URL }}"
+         echo "::endgroup::"
+
+      - name: Cleanup
+        run: rm -rf ${PWD}/*
+
+      - name: Prepare the environment
+        run: |
+          sudo apt-get update && sudo apt-get upgrade && sudo apt-get install wget -y
+          && sudo apt-get install python3-pip -y && sudo apt-get install git -y
+      
+      - name: Install Bpf-Patcher
+        run: |
+          pip3 install --upgrade git+https://github.com/R0rt1z2/mtk-bpf-patcher
+
+      - name: Create Folder
+        run: |
+          mkdir -p android && cd android
+
+      - name: Folder to save input KERNEL
+        working-directory: android/
+        run: |
+          mkdir -p kernel_input && cd kernel_input
+          wget ${{ github.event.inputs.KERNEL_URL }}
+          && cd ..
+
+      - name:  Execution Kernel
+        working-directory: android/
+        run: |
+          mkdir -p kernel_output 
+          mtk-bpf-patcher kernel_input/*.gz kernel_output
+          mtk-bpf-patcher kernel_input/*.gz-dtb kernel_output
+          mtk-bpf-patcher kernel_input/*.Image kernel_output
+
+      - name: Push to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+           android/kernel_output/*.gz
+           android/kernel_output/*.gz-dtb
+           android/kernel_output/*.Image
+
+          name: Kernel Build 
+          tag_name: ${{ github.run_id }}
+          body: |
+           ### Notes
+           * Test at your own risk.
+           * Use kernel flasher or any custom recoveries to flash the compressed kernel zip file.
+            
